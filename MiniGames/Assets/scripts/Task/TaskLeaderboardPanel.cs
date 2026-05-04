@@ -22,6 +22,11 @@ namespace MiniGames.Task
         [Header("UI")]
         [SerializeField] TMP_Text bodyText;
         [SerializeField] Button refreshButton;
+        [Tooltip("Optional. If unset, a copy of Refresh is created at runtime.")]
+        [SerializeField] Button playAgainButton;
+        [SerializeField] bool createPlayAgainFromRefreshWhenMissing = true;
+        [Tooltip("Hide this leaderboard panel when Play Again is pressed so the game is visible.")]
+        [SerializeField] bool hidePanelOnPlayAgain = true;
 
         [Header("Behaviour")]
         [SerializeField] bool refreshOnEnable = true;
@@ -31,6 +36,33 @@ namespace MiniGames.Task
         {
             if (authClient == null) authClient = FindFirstObjectByType<TaskJwtAuthClient>();
             if (refreshButton != null) refreshButton.onClick.AddListener(Refresh);
+            EnsurePlayAgainButton();
+            if (playAgainButton != null)
+            {
+                playAgainButton.onClick.RemoveAllListeners();
+                playAgainButton.onClick.AddListener(OnPlayAgainClicked);
+            }
+        }
+
+        void EnsurePlayAgainButton()
+        {
+            if (playAgainButton != null) return;
+            if (!createPlayAgainFromRefreshWhenMissing || refreshButton == null) return;
+
+            var clone = Instantiate(refreshButton.gameObject, refreshButton.transform.parent, false);
+            clone.name = "PlayAgainButton";
+            playAgainButton = clone.GetComponent<Button>();
+            var label = clone.GetComponentInChildren<TextMeshProUGUI>();
+            if (label != null)
+                label.text = "Play Again";
+            clone.transform.SetSiblingIndex(refreshButton.transform.GetSiblingIndex() + 1);
+        }
+
+        void OnPlayAgainClicked()
+        {
+            TaskBackendEvents.RaisePlayDefaultGameRequested();
+            if (hidePanelOnPlayAgain)
+                gameObject.SetActive(false);
         }
 
         void OnEnable()

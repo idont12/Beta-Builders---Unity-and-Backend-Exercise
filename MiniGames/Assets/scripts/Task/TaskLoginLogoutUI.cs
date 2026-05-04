@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,6 +49,7 @@ namespace MiniGames.Task
         [SerializeField] float proactiveCheckIntervalSeconds = 30f;
 
         float _nextProactiveCheck;
+        Coroutine _pendingPlayDefaultGame;
 
         void Awake()
         {
@@ -72,7 +74,11 @@ namespace MiniGames.Task
         {
             var loggedIn = TaskAuthSession.HasRefreshToken;
             ApplyLoggedInState(loggedIn);
-            if (loggedIn) TaskBackendEvents.RaiseLoggedIn();
+            if (loggedIn)
+            {
+                TaskBackendEvents.RaiseLoggedIn();
+                RequestStartDefaultGameNextFrame();
+            }
         }
 
         void Update()
@@ -121,6 +127,7 @@ namespace MiniGames.Task
                 if (passwordInput != null) passwordInput.text = string.Empty;
                 ApplyLoggedInState(true);
                 TaskBackendEvents.RaiseLoggedIn();
+                RequestStartDefaultGameNextFrame();
             });
         }
 
@@ -164,6 +171,7 @@ namespace MiniGames.Task
                     if (registerPasswordInput != null) registerPasswordInput.text = string.Empty;
                     ApplyLoggedInState(true);
                     TaskBackendEvents.RaiseLoggedIn();
+                    RequestStartDefaultGameNextFrame();
                 });
             });
         }
@@ -223,6 +231,23 @@ namespace MiniGames.Task
         static void SetInteractable(Selectable s, bool on)
         {
             if (s != null) s.interactable = on;
+        }
+
+        /// <summary>
+        /// Defer one frame so <see cref="GameManager"/> (and other listeners) have subscribed in <c>OnEnable</c>.
+        /// </summary>
+        void RequestStartDefaultGameNextFrame()
+        {
+            if (_pendingPlayDefaultGame != null)
+                StopCoroutine(_pendingPlayDefaultGame);
+            _pendingPlayDefaultGame = StartCoroutine(PlayDefaultGameAfterOneFrame());
+        }
+
+        IEnumerator PlayDefaultGameAfterOneFrame()
+        {
+            yield return null;
+            TaskBackendEvents.RaisePlayDefaultGameRequested();
+            _pendingPlayDefaultGame = null;
         }
     }
 }

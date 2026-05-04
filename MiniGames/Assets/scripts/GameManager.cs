@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using MiniGames.UI;
+using MiniGames.Task;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +55,7 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject winPanel;
     [SerializeField] private GameObject losePanel;
+    [SerializeField] private GameObject leaderboardPanel;
     [SerializeField] private MiniGameTimerDisplay timerDisplay;
     
     [Header("Win/Lose UI Text")]
@@ -62,6 +64,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Backend (optional)")]
     [SerializeField] private MiniGames.Task.TaskGameBackendBridge backendBridge;
+
+    [Header("Default run (after login / Play Again)")]
+    [Tooltip("Level JSON (e.g. Assets/jsonsExamples/test_level_data.json) used when starting the default game.")]
+    [SerializeField] private TextAsset defaultLevelsJson;
     #endregion
 
     #region Private Fields
@@ -83,6 +89,56 @@ public class GameManager : MonoBehaviour
         // Hide win/lose panels initially
         if (winPanel != null) winPanel.SetActive(false);
         if (losePanel != null) losePanel.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        TaskBackendEvents.PlayDefaultGameRequested += OnPlayDefaultGameRequested;
+    }
+
+    void OnDisable()
+    {
+        TaskBackendEvents.PlayDefaultGameRequested -= OnPlayDefaultGameRequested;
+    }
+
+    void OnPlayDefaultGameRequested()
+    {
+        StartDefaultGame();
+    }
+
+    /// <summary>
+    /// Restarts the configured default level pack (first level). Used after login and from leaderboard Play Again.
+    /// </summary>
+    public void StartDefaultGame()
+    {
+        if (defaultLevelsJson == null)
+        {
+            Debug.LogError("GameManager: assign defaultLevelsJson (TextAsset) to run the default game.");
+            return;
+        }
+
+        PrepareForNewGameRun();
+        StartGame(defaultLevelsJson.text);
+    }
+
+    void PrepareForNewGameRun()
+    {
+        isMiniGameActive = false;
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+
+        if (timerDisplay != null)
+            timerDisplay.HideTimer();
+
+        if (winPanel != null)
+            winPanel.SetActive(false);
+        if (losePanel != null)
+            losePanel.SetActive(false);
+        if (leaderboardPanel != null)
+            leaderboardPanel.SetActive(false);
     }
 
     private void OnDestroy()
@@ -542,6 +598,8 @@ public class GameManager : MonoBehaviour
 
         if (backendBridge != null)
             backendBridge.ReportMiniGameWin(Mathf.RoundToInt(earnedXP));
+
+        ShowLeaderboardAtEnd();
     }
 
     /// <summary>
@@ -560,6 +618,16 @@ public class GameManager : MonoBehaviour
                 loseMessageText.text = "Game Over! You ran out of questions.";
             }
         }
+
+        ShowLeaderboardAtEnd();
+    }
+
+    void ShowLeaderboardAtEnd()
+    {
+        if (leaderboardPanel != null)
+            leaderboardPanel.SetActive(true);
+
+        TaskBackendEvents.RaiseLeaderboardShouldRefresh();
     }
     #endregion
 
