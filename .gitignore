@@ -1,0 +1,75 @@
+# =========================
+# Unity project (MiniGames)
+# =========================
+MiniGames/[Ll]ibrary/
+MiniGames/[Tt]emp/
+MiniGames/[Oo]bj/
+MiniGames/[Bb]uild/
+MiniGames/[Bb]uilds/
+MiniGames/[Ll]ogs/
+MiniGames/[Uu]ser[Ss]ettings/
+MiniGames/[Mm]emoryCaptures/
+MiniGames/[Rr]ecordings/
+
+# Unity generated / IDE project files
+MiniGames/*.csproj
+MiniGames/*.unityproj
+MiniGames/*.sln
+MiniGames/*.slnx
+MiniGames/*.suo
+MiniGames/*.tmp
+MiniGames/*.user
+MiniGames/*.userprefs
+MiniGames/*.pidb
+MiniGames/*.booproj
+MiniGames/*.svd
+MiniGames/*.pdb
+MiniGames/*.mdb
+MiniGames/*.opendb
+MiniGames/*.VC.db
+
+# Unity build artifacts
+MiniGames/*.apk
+MiniGames/*.aab
+MiniGames/*.app
+MiniGames/*.unitypackage
+MiniGames/*.unitypackage.meta
+MiniGames/sysinfo.txt
+MiniGames/mono_crash.*
+MiniGames/.vs/
+MiniGames/.gradle/
+MiniGames/ExportedObj/
+
+# =========================
+# Python/Django backend
+# =========================
+Backend/venv/
+Backend/venv_old_broken/
+Backend/.venv/
+Backend/**/__pycache__/
+Backend/**/*.py[cod]
+Backend/*.sqlite3
+Backend/db.sqlite3
+Backend/.env
+Backend/.env.*
+Backend/*.log
+
+# Test/coverage/cache
+Backend/.pytest_cache/
+Backend/.mypy_cache/
+Backend/.ruff_cache/
+Backend/.coverage
+Backend/htmlcov/
+
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+.vscode/
+.idea/
+*.swp
+*.swo
+

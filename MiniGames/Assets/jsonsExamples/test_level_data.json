@@ -1,0 +1,33 @@
+{
+  "levels": [
+    {
+      "levelId": 1,
+      "mini_game_id": "2",
+      "game_time": 60,
+      "levelName": "Addition Basics",
+      "questions": [
+        {
+          "statement": "_+5=6",
+          "correctAnswer": 1,
+          "options": [1, 2, 3, 5],
+          "difficulty": "easy",
+          "xp": 25
+        },
+        {
+          "statement": "_+3=10",
+          "correctAnswer": 7,
+          "options": [5, 6, 7, 8],
+          "difficulty": "easy",
+          "xp": 20
+        },
+        {
+          "statement": "4+_=9",
+          "correctAnswer": 5,
+          "options": [3, 4, 5, 6],
+          "difficulty": "easy",
+          "xp": 10
+        }
+      ]
+    }
+  ]
+}

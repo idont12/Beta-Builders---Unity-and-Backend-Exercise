@@ -1,0 +1,33 @@
+{
+  "levels": [
+    {
+      "levelId": 2,
+      "mini_game_id": "1",
+      "game_time": 20,
+      "levelName": "Subtraction Challenge",
+      "questions": [
+        {
+          "statement": "10-_=3",
+          "correctAnswer": 7,
+          "options": [5, 6, 7, 8],
+          "difficulty": "medium",
+          "xp": 25
+        },
+        {
+          "statement": "_-5=8",
+          "correctAnswer": 13,
+          "options": [11, 12, 13, 14],
+          "difficulty": "medium",
+          "xp": 20
+        },
+        {
+          "statement": "15-6=_",
+          "correctAnswer": 9,
+          "options": [7, 8, 9, 10],
+          "difficulty": "medium",
+          "xp": 15
+        }
+      ]
+    }
+  ]
+}
